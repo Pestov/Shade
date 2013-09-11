@@ -6,4 +6,4 @@ The Ultimate Shadow Mixin
 
 [Demo and Usage SCSS CodePen](http://codepen.io/hugo/full/xzjGB) 
 
-[Demo and LESS-1.5.0](http://netcribe.com/MojoShade/) 
+[Demo LESS-1.5.0](http://netcribe.com/MojoShade/) 

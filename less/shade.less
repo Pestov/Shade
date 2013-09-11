@@ -1,0 +1,43 @@
+/* ==========================================================================
+   Created by Ilya Pestov - @ilya_pestov
+   ========================================================================== */
+
+.shade(@type, @color: #3498db, @depth: 20, @angle: 135deg, @long: true, @fade: false) {
+    @ang: (@angle - 90deg);
+    @x: 1.5px * cos(@ang);
+    @y: 1.5px * sin(@ang);
+
+    .shade(@type, @color, @depth, @x, @y, @long, @fade, (lightness(@color)/@depth)/2, (alpha(@color)/@depth));
+}
+
+.shade(@type, @color, @depth, @x, @y, @long, @fade, @darken, @opacify) when (@long = true) {
+    .shade(@type, @color, @depth, @x, @y, @fade, 0, @opacify);
+}
+.shade(@type, @color, @depth, @x, @y, @long, @fade, @darken, @opacify) when (@long = false) {
+    .shade(@type, @color, @depth, @x, @y, @fade, @darken, @opacify);    
+}
+
+
+.shade(@type, @color, @depth, @x, @y, @long, @darken, @opacify) when (@fade = true) {
+    .shade(@type, @color, @depth, @x, @y, @darken, @opacify);
+}
+.shade(@type, @color, @depth, @x, @y, @long, @darken, @opacify) when (@fade = false) {
+    .shade(@type, @color, @depth, @x, @y, @darken, 0);
+}
+
+.shade(@type, @color, @depth, @x, @y, @darken, @opacify) {
+    @hue: hue(@color);
+    @sat: saturation(@color);
+    @lightness: lightness(@color);
+    .shade-recursive(@type, 1, @depth, @x, @y, @darken, @opacify, @hue, @sat, @lightness);  
+}
+
+.shade-recursive(@type, @i, @depth, @x, @y, @darken, @opacify, @hue, @sat, @lightness) when (@i < @depth) and (@type = text) {
+   text-shadow+: (@i * @x) (@i * @y) 0 hsla(@hue, @sat, (@lightness - (@i * @darken)), (1 - (@i * @opacify)));
+   .shade-recursive(@type, @i + 1, @depth, @x, @y, @darken, @opacify, @hue, @sat, @lightness);
+} 
+
+.shade-recursive(@type, @i, @depth, @x, @y, @darken, @opacify, @hue, @sat, @lightness) when (@i < @depth) and (@type = box) {
+   box-shadow+: (@i * @x) (@i * @y) 0 hsla(@hue, @sat, (@lightness - (@i * @darken)), (1 - (@i * @opacify)));
+   .shade-recursive(@type, @i + 1, @depth, @x, @y, @darken, @opacify, @hue, @sat, @lightness);
+} 
